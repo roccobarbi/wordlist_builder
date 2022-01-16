@@ -1,6 +1,7 @@
 # TODO: split words, for each word strip whitespaces and stops
 # TODO: for each word, only pass long words or whitelisted short words
 # TODO: on everything that remains, only pass words that contain whitelisted symbols
+import re
 
 class TextStripper:
     def __init__(self, text=""):
@@ -17,6 +18,7 @@ class TextStripper:
             text = self.text
         text = self.strip_html_tags(text)
         text = self.strip_punctuation(text)
+        text = self.strip_non_words(text)
         return text
 
     def strip_html_tags(self, text=""):
@@ -31,7 +33,8 @@ class TextStripper:
         for character in text:
             if tag_open:
                 if character == ">":
-                    temp_text.append(" ") # Safety to avoid linking different words together
+                    if reading_name and tag_name != "/a":  # sometimes <a>name</a>'s may be used
+                        temp_text.append(" ")  # Safety to avoid linking different words together
                     tag_open = False
                     if reading_name:
                         reading_name = False
@@ -68,8 +71,7 @@ class TextStripper:
     def strip_punctuation(self, text=""):
         if text == "":
             text = self.text
-        punctuation = ",.?;:!\'\"()"
-        # return ''.join(filter(lambda ch: ch not in punctuation, text))
+        punctuation = ",.?;:!\"()"
         temp_text = []
         for character in text:
             if character in punctuation:
@@ -78,3 +80,13 @@ class TextStripper:
                 temp_text.append(character)
         return "".join(temp_text)
 
+    def strip_non_words(self, text=""):
+        if text == "":
+            text = self.text
+        blacklist = re.compile('^.*[^a-zA-Z-\'].*$')
+        text = text.split()
+        temp_text = []
+        for word in text:
+            if blacklist.match(word) is None:
+                temp_text.append(word)
+        return " ".join(temp_text)
