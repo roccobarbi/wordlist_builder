@@ -34,9 +34,10 @@ def define_advancement_unit(urls, processes):
 if __name__ == "__main__":
     time_start = int(time.time())
     argument_parser = argparse.ArgumentParser()
-    argument_parser.add_argument("-p", "--processes", type=int, default=1)
-    argument_parser.add_argument("-u", "--urls", type=int, default=200)
-    argument_parser.add_argument("-o", "--out", type=str, default=None)
+    argument_parser.add_argument("-p", "--processes", type=int, default=1, help="Number of processes (default 1).")
+    argument_parser.add_argument("-u", "--urls", type=int, default=200, help="Number of URLs per process (default 200).")
+    argument_parser.add_argument("-o", "--out", type=str, default=None, help="Optional name of the output file.")
+    argument_parser.add_argument("-m", "--merge", type=str, default=None, help="Optional name of a partial list to merge with the new one.")
     args = argument_parser.parse_args()
     if args.out is None:
         outfile_name = "out_" + str(args.processes) + "x" + str(args.urls) + "_wiki.txt"
@@ -45,6 +46,10 @@ if __name__ == "__main__":
     advancement_unit, total_urls = define_advancement_unit(args.urls, args.processes)
     processes = []
     words = []
+    if args.merge is not None:
+        with open(args.merge, "r") as infile:
+            for line in infile:
+                words.append(line.strip())
     queue = Queue()
     strip_counter = 0
     print("Spawning processes...")
