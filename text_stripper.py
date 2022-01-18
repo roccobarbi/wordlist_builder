@@ -19,6 +19,7 @@ class TextStripper:
         text = self.strip_html_tags(text)
         text = self.strip_punctuation(text)
         text = self.strip_non_words(text)
+        text = self.strip_short_words(text)
         return text
 
     def strip_html_tags(self, text=""):
@@ -88,5 +89,14 @@ class TextStripper:
         temp_text = []
         for word in text:
             if blacklist.match(word) is None:
+                temp_text.append(word.strip("'-"))  # Leading and trailing ' and - are removed
+        return temp_text
+
+    def strip_short_words(self, text="", min_length=4):
+        if text == "":
+            text = self.text
+        temp_text = []
+        for word in text:
+            if len(word) >= min_length:
                 temp_text.append(word)
-        return " ".join(temp_text)
+                return " ".join(temp_text)
