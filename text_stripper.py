@@ -22,6 +22,14 @@ class TextStripper:
         text = self.strip_short_words(text)
         return text
 
+    def strip_plaintext(self, text=""):
+        if text == "":
+            text = self.text
+        text = self.strip_punctuation(text)
+        text = self.strip_non_words(text)
+        text = self.strip_short_words(text)
+        return text
+
     def strip_html_tags(self, text=""):
         if text == "":
             text = self.text
@@ -99,4 +107,4 @@ class TextStripper:
         for word in text:
             if len(word) >= min_length:
                 temp_text.append(word)
-                return " ".join(temp_text)
+        return " ".join(temp_text)
