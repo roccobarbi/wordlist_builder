@@ -12,13 +12,13 @@ def download_pages(num, q, urls):
     print("Process: " + str(num) + " finished!")
 
 
-def write_output(outfile_name):
+def write_output(output, destination):
     index = 0
-    with open(outfile_name, "w") as outfile:
-        for word in low_words:
+    with open(destination, "w") as outfile:
+        for element in output:
             if index > 0:
                 outfile.write("\n")
-            outfile.write(word)
+            outfile.write(element)
             index += 1
 
 
@@ -37,7 +37,10 @@ if __name__ == "__main__":
     argument_parser.add_argument("-p", "--processes", type=int, default=1, help="Number of processes (default 1).")
     argument_parser.add_argument("-u", "--urls", type=int, default=200, help="Number of URLs per process (default 200).")
     argument_parser.add_argument("-o", "--out", type=str, default=None, help="Optional name of the output file.")
-    argument_parser.add_argument("-m", "--merge", type=str, default=None, help="Optional name of a partial list to merge with the new one.")
+    argument_parser.add_argument("-m", "--merge", type=str, default=None, help="Optional name of a partial list to "
+                                                                               "merge with the new one.")
+    argument_parser.add_argument("-t", "--timeout", type=str, default=None, help="Timeout for the URL stripper, "
+                                                                                 "in seconds (default 2).")
     args = argument_parser.parse_args()
     if args.out is None:
         outfile_name = "out_" + str(args.processes) + "x" + str(args.urls) + "_wiki.txt"
@@ -75,5 +78,5 @@ if __name__ == "__main__":
     for word in words:
         low_words.append(word.lower())
     low_words = sorted(list(dict.fromkeys(low_words)))
-    write_output(outfile_name)
+    write_output(low_words, outfile_name)
     print("Total time: " + str(int(time.time()) - time_start))

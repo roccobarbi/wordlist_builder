@@ -108,3 +108,8 @@ class TextStripper:
             if len(word) >= min_length:
                 temp_text.append(word)
         return " ".join(temp_text)
+
+    def strip_multiple_signs(self, text="", strict=False):
+        # When more than a consecutive non-alphabetic sign is encountered, either ignore the whole entry (strict=True),
+        # or split the entry in two words (strict=False).
+        pass
